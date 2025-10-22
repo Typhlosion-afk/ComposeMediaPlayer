@@ -2,6 +2,12 @@ package com.example.composemediaplayer.core
 
 import android.annotation.SuppressLint
 
+object AppDestinations {
+    const val SPEEDOMETER_ROUTE = "speedometer"
+    const val SETTINGS_ROUTE = "settings"
+    const val NOW_PLAYING_ROUTE = "nowPlaying"
+}
+
 @SuppressLint("DefaultLocale")
 fun Long.toTimeString(): String {
     val totalSeconds = this / 1000

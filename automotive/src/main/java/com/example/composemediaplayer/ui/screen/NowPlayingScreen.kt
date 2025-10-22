@@ -54,6 +54,7 @@ import com.example.composemediaplayer.ui.MainViewModel
 
 @Composable
 fun NowPlayingScreen(
+    modifier: Modifier = Modifier,
     viewModel: MainViewModel,
     onBack: () -> Unit
 ) {

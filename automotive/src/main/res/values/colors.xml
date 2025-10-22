@@ -16,35 +16,17 @@
     <color name="black_500">#353535</color>
     <color name="black_600">#2B2B2B</color>
 
-    <color name="view_line_color">@color/black_200</color>
     <color name="bottom_bar_color">#0D0F1A</color>
     <color name="background_color">#181B2C</color>
     <color name="card_background_color">#22263D</color>
-    <color name="hard_peach">#D9519D</color>
-    <color name="light_peach">#ED8770</color>
-    <color name="color_text_50">@color/black_50</color>
-
-
-    <color name="popup_background">#383B49</color>
-
-    <color name="bot_nav_selected_color">#151827</color>
-    <color name="bot_nav_gray_color">#63666E</color>
-    <color name="search_bg_color">#292E4B</color>
-    <color name="text_hint_color">#707070</color>
-    <color name="dark_background_color">#181A24</color>
-    <color name="seek_bar_background_color">#A2A2A2</color>
-
-    <color name="controller_player_color">#0B0E1F</color>
-    <color name="light_blue_50">#FFE1F5FE</color>
-    <color name="light_blue_200">#FF81D4FA</color>
-    <color name="light_blue_600">#FF039BE5</color>
-    <color name="light_blue_900">#FF01579B</color>
-
-    <color name="widget_bg_color">#050814</color>
-
-    <color name="start_visualizer_color">#C35BD1</color>
-    <color name="end_visualizer_color">#657DDF</color>
-
     <color name="text_primary">#FFFFFF</color>
     <color name="text_secondary">#B0B3C3</color>
+
+    <!-- Light/Day Mode Colors -->
+    <color name="bottom_bar_color_light">#F0F2F5</color>
+    <color name="background_color_light">#FFFFFF</color>
+    <color name="card_background_color_light">#F9F9F9</color>
+    <color name="text_primary_light">#000000</color>
+    <color name="text_secondary_light">#5C5C5C</color>
+
 </resources>
