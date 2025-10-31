@@ -1,4 +1,6 @@
-import org.gradle.kotlin.dsl.implementation
+import org.gradle.kotlin.dsl.*
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+import org.gradle.testing.jacoco.tasks.JacocoReport
 
 plugins {
     alias(libs.plugins.android.application)
@@ -6,6 +8,7 @@ plugins {
     kotlin("kapt")
     id("kotlin-parcelize")
     alias(libs.plugins.hilt.android)
+    id("jacoco")
 }
 
 android {
@@ -30,17 +33,23 @@ android {
                 "proguard-rules.pro"
             )
         }
+        debug {
+            isTestCoverageEnabled = true
+        }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
     kotlinOptions {
         jvmTarget = "11"
     }
 
     buildFeatures {
         compose = true
+        aidl = true
     }
 
     composeOptions {
@@ -52,19 +61,16 @@ android {
     }
 
     sourceSets["main"].aidl.srcDirs("src/main/aidl")
-    buildFeatures {
-        aidl = true
+
+    testOptions {
+
     }
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.lifecycle.service)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
 
     // Compose
     implementation("androidx.activity:activity-compose:1.8.2")
@@ -80,14 +86,76 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
 
-    // Debugging
+    // Debug
     debugImplementation("androidx.compose.ui:ui-tooling:1.5.3")
     debugImplementation("androidx.compose.ui:ui-test-manifest:1.5.3")
 
-    //Hilt with Jetpack
+    // Hilt
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
 
-    //Media service
+    // Media service
     implementation(libs.androidx.media)
+
+    // Test
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("org.mockito:mockito-core:5.12.0")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:5.3.1")
+    testImplementation("org.robolectric:robolectric:4.12.1")
+    testImplementation("androidx.test:core:1.6.1")
+    testImplementation("com.google.dagger:hilt-android-testing:2.48")
+    kaptTest("com.google.dagger:hilt-compiler:2.48")
+}
+
+// ---------- Jacoco task ----------
+tasks.withType<Test>().configureEach {
+    testLogging {
+        events(TestLogEvent.FAILED, TestLogEvent.PASSED, TestLogEvent.SKIPPED)
+    }
+}
+
+tasks.register<JacocoReport>("jacocoTestReport") {
+    dependsOn("testDebugUnitTest")
+
+    group = "verification"
+    description = "Generate Jacoco coverage report for Debug unit tests"
+
+    reports {
+        html.required.set(true)
+        xml.required.set(true)
+        csv.required.set(false)
+    }
+
+    val fileFilter = listOf(
+        "**/R.class",
+        "**/R$*.class",
+        "**/BuildConfig.*",
+        "**/Manifest*.*",
+        "**/*Test*.*",
+        "android/**/*.*",
+        "**/hilt_aggregated_deps*",
+        "**/dagger/hilt/internal/**"
+    )
+
+    val javaClasses = fileTree("${buildDir}/intermediates/javac/debug/classes") {
+        exclude(fileFilter)
+    }
+    val kotlinClasses = fileTree("${buildDir}/tmp/kotlin-classes/debug") {
+        exclude(fileFilter)
+    }
+
+    classDirectories.setFrom(files(javaClasses, kotlinClasses))
+    sourceDirectories.setFrom(files("src/main/java", "src/main/kotlin"))
+    executionData.setFrom(fileTree(buildDir) {
+        include(
+            "jacoco/testDebugUnitTest.exec",
+            "outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec"
+        )
+    })
+
+    doLast {
+        val reportDir = reports.html.outputLocation.get().asFile
+        val normalizedPath = reportDir.path.replace("\\", "/")
+        println("✅ Jacoco report generated: file:///$normalizedPath/index.html")
+    }
 }
