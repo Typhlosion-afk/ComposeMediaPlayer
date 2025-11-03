@@ -59,7 +59,7 @@ class MusicService : MediaBrowserServiceCompat() {
 
     private val mediaSessionCallback = object : MediaSessionCompat.Callback() {
         override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
-            val songToPlay = songList.find { it.id == mediaId } ?: return
+            val songToPlay = songList.find { it.id.toString() == mediaId } ?: return
             val startIndex = songList.indexOf(songToPlay)
 
             mediaPlayerManager.play(songList, startIndex)
@@ -122,7 +122,7 @@ class MusicService : MediaBrowserServiceCompat() {
     private fun updateMediaMetadata(song: Song?) {
         if (song == null) return
         val metadata = MediaMetadataCompat.Builder()
-            .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, song.id)
+            .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, song.id.toString())
             .putString(MediaMetadataCompat.METADATA_KEY_TITLE, song.title)
             .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, song.artist)
             .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, song.album)
@@ -210,7 +210,7 @@ class MusicService : MediaBrowserServiceCompat() {
 
         val mediaItems = songList.map { song ->
             val description = MediaDescriptionCompat.Builder()
-                .setMediaId(song.id)
+                .setMediaId(song.id.toString())
                 .setTitle(song.title)
                 .setSubtitle(song.artist)
                 .build()

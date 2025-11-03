@@ -20,21 +20,47 @@ import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
+import com.example.composemediaplayer.data.SongDao
 import com.example.composemediaplayer.ui.screen.setting.SettingsManager
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
-import javax.inject.Singleton
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val repository: PlaybackRepository,
     private val mediaPlayerManager: MusicPlayerManager,
     private val settingsManager: SettingsManager,
+    private val songDao: SongDao,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
 
     private val _currentListSong = MutableStateFlow<List<Song>>(emptyList())
-    val currentListSong: StateFlow<List<Song>> = _currentListSong
+    val currentListSong: StateFlow<List<Song>> = songDao.getAllSongs()
+        .stateIn(viewModelScope,
+            SharingStarted.WhileSubscribed(5000), emptyList())
+
+    fun toggleFavorite(song: Song) {
+        viewModelScope.launch {
+            val updatedSong = song.copy(isFavorite = !song.isFavorite)
+            songDao.updateSong(updatedSong)
+        }
+    }
+
+    private val _isRefreshing = MutableStateFlow(false)
+    val isRefreshing = _isRefreshing.asStateFlow()
+
+    fun refreshSongs() {
+        viewModelScope.launch {
+            _isRefreshing.value = true
+            loadData()
+            Log.d("TAG", "refreshSongs: Reload")
+            delay(1000)
+            _isRefreshing.value = false
+        }
+    }
 
     private lateinit var mediaBrowser: MediaBrowserCompat
     private var mediaController: MediaControllerCompat? = null
@@ -108,11 +134,12 @@ class MainViewModel @Inject constructor(
                 repository.getAllSongs()
             }
             _currentListSong.value = songs
+            songDao.insertAll(_currentListSong.value)
         }
     }
 
     fun playSong(song: Song) {
-        mediaController?.transportControls?.playFromMediaId(song.id, null)
+        mediaController?.transportControls?.playFromMediaId(song.id.toString(), null)
     }
 
     fun pause() {

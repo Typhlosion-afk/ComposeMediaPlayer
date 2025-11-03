@@ -61,6 +61,7 @@ fun NowPlayingScreen(
     val isPlaying by viewModel.isPlaying.collectAsStateWithLifecycle()
     val currentSong by viewModel.currentSong.collectAsStateWithLifecycle()
     val playbackPosition by viewModel.playbackPosition.collectAsStateWithLifecycle(initialValue = 0L)
+    val isRefreshing by viewModel.isRefreshing.collectAsStateWithLifecycle()
 
     var isSplitScreen by remember { mutableStateOf(false) }
 
@@ -361,10 +362,11 @@ fun HeaderRow(onBack: () -> Unit, onShowList: () -> Unit) {
 fun NowPlayingContentFullScreenPreview() {
     NowPlayingContent(
         song = Song(
-            id = "1",
+            id = 1L,
             title = "A Cool Song Title",
             artist = "A Famous Artist",
             album = "An Awesome Album",
+            filePath = "",
             duration = 240000L
         ),
         isPlaying = true,
@@ -390,10 +392,11 @@ fun NowPlayingContentSplitScreenPreview() {
         Box(modifier = Modifier.weight(0.35f)) {
             NowPlayingContent(
                 song = Song(
-                    id = "1",
+                    id = 1L,
                     title = "A Cool Song Title",
                     artist = "A Famous Artist",
                     album = "An Awesome Album",
+                    filePath = "",
                     duration = 240000L // 4 minutes
                 ),
                 isPlaying = false,

@@ -17,6 +17,5 @@ class ShadowMediaPlayer {
         IllegalStateException::class
     )
     fun setDataSource(context: Context, uri: Uri) {
-        //no op
     }
 }

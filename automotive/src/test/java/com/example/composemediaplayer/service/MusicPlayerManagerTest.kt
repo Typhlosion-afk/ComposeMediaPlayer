@@ -2,10 +2,11 @@ package com.example.composemediaplayer.service
 
 import android.content.Context
 import android.media.MediaPlayer
-import androidx.compose.runtime.saveable.mapSaver
+import android.os.Looper
 import com.example.composemediaplayer.data.Song
 import com.example.composemediaplayer.shadows.ShadowMediaPlayer
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
@@ -14,7 +15,9 @@ import org.mockito.Mockito.mock
 import org.mockito.Mockito.spy
 import org.mockito.Mockito.verify
 import org.mockito.kotlin.whenever
+import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.Shadows
 import org.robolectric.annotation.Config
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -27,18 +30,22 @@ class MusicPlayerManagerTest {
     private lateinit var mockMediaPlayer: MediaPlayer
 
     private val fakeSongs = listOf(
-        Song(id = "1", title = "Song A", artist = "Artist A", duration = 1000L, filePath = "file://a"),
-        Song(id = "2", title = "Song B", artist = "Artist B", duration = 1000L, filePath = "file://a"),
-        Song(id = "3", title = "Song C", artist = "Artist C", duration = 1000L, filePath = "file://a"),
-        Song(id = "4", title = "Song D", artist = "Artist D", duration = 1000L, filePath = "file://a"),
+        Song(id = 1, title = "Song A", artist = "Artist A", duration = 1000L, filePath = "file://a"),
+        Song(id = 2, title = "Song B", artist = "Artist B", duration = 1000L, filePath = "file://a"),
+        Song(id = 3, title = "Song C", artist = "Artist C", duration = 1000L, filePath = "file://a"),
+        Song(id = 4, title = "Song D", artist = "Artist D", duration = 1000L, filePath = "file://a"),
     )
 
     @Before
     fun setup() {
         context = mock(Context::class.java)
         mockMediaPlayer = mock()
-
         musicPlayerManager = spy(MusicPlayerManager(context))
+    }
+
+    @After
+    fun after() {
+        //Release test session
     }
 
     // =============================
@@ -51,6 +58,7 @@ class MusicPlayerManagerTest {
 
         // when
         musicPlayerManager.play(fakeSongs, 1)
+        Shadows.shadowOf(Looper.getMainLooper()).runToEndOfTasks()
 
         // then
         assertEquals(1, musicPlayerManager.currentIndex.value)

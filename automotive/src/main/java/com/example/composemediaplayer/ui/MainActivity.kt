@@ -114,10 +114,13 @@ class MainActivity : ComponentActivity() {
         ) {
             composable(BottomNavItem.SongList.route) {
                 // Pass the viewModels down to the screens
-                SongListScreen(viewModel = viewModel) { song ->
-                    viewModel.playSong(song)
-                    navController.navigate(AppDestinations.NOW_PLAYING_ROUTE)
-                }
+                SongListScreen(
+                    viewModel = viewModel,
+                    onSongClick =
+                        { song ->
+                            viewModel.playSong(song)
+                            navController.navigate(AppDestinations.NOW_PLAYING_ROUTE)
+                        })
             }
             composable(AppDestinations.SPEEDOMETER_ROUTE) {
                 SpeedometerScreen(viewModel = vehicleStatusViewModel, mainViewModel = viewModel)

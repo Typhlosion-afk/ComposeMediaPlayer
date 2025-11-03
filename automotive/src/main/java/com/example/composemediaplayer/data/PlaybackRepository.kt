@@ -41,7 +41,7 @@ class PlaybackRepository @Inject constructor(
             mediaPlayer.release()
 
             Song(
-                id = resId.toString(),
+                id = resId.toLong(),
                 title = title,
                 artist = artist,
                 duration = duration,
@@ -99,7 +99,7 @@ class PlaybackRepository @Inject constructor(
 
                     songList.add(
                         Song(
-                            id = id.toString(),
+                            id = id,
                             title = title,
                             artist = artist,
                             album = album,

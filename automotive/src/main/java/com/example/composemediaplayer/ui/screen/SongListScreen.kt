@@ -71,9 +71,6 @@ fun SongListScreen(viewModel: MainViewModel, onSongClick: (Song) -> Unit) {
 
     LazyColumn {
         items(currentListSong) { song ->
-            // In a real app, you would get this state from your ViewModel
-            var isFavorite by remember { mutableStateOf(false) }
-
             Card(
                 shape = customShape,
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
@@ -124,15 +121,13 @@ fun SongListScreen(viewModel: MainViewModel, onSongClick: (Song) -> Unit) {
                         trailingContent = {
                             IconButton(
                                 onClick = {
-                                    isFavorite = !isFavorite
-                                    // TODO: Call viewModel.toggleFavorite(song.id)
+                                    viewModel.toggleFavorite(song)
                                 }
                             ) {
                                 Icon(
-                                    imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                                    imageVector = if (song.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                                     contentDescription = "Toggle Favorite",
-                                    // Use a theme-aware color, typically the primary color for emphasis
-                                    tint = if (isFavorite) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+                                    tint = if (song.isFavorite) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             }
                         }
