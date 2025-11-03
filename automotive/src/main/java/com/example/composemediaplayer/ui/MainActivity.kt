@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -38,6 +39,7 @@ import com.example.composemediaplayer.ui.screen.SongListScreen
 import com.example.composemediaplayer.ui.screen.setting.SettingsScreen
 import com.example.composemediaplayer.ui.screen.speed.SpeedometerScreen
 import com.example.composemediaplayer.ui.screen.speed.VehicleStatusViewModel
+import com.example.composemediaplayer.ui.theme.ComposeMediaPlayerTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -47,13 +49,12 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        actionBar?.hide()
-        window.decorView.setBackgroundColor(
-            ContextCompat.getColor(this, R.color.background_color)
-        )
         askForPermission()
         setContent {
-            MaterialTheme {
+            val useDarkTheme by viewModel.isDarkModeEnabled.collectAsStateWithLifecycle()
+            ComposeMediaPlayerTheme(
+                darkTheme = useDarkTheme
+            ) {
                 val navController = rememberNavController()
                 val navItems = listOf(
                     BottomNavItem.SongList,
@@ -61,20 +62,21 @@ class MainActivity : ComponentActivity() {
                     BottomNavItem.Setting,
                 )
 
-                Surface(color = Color.Transparent) {
+                Surface(color = MaterialTheme.colorScheme.background) {
                     Row {
                         val navBackStackEntry by navController.currentBackStackEntryAsState()
                         val currentRoute = navBackStackEntry?.destination?.route
 
                         NavigationRail(
                             modifier = Modifier.fillMaxHeight(),
-                            containerColor = colorResource(id = R.color.bottom_bar_color)
+                            containerColor = MaterialTheme.colorScheme.surface
                         ) {
                             navItems.forEach { screen ->
                                 NavigationRailItem(
                                     modifier = Modifier.padding(vertical = 16.dp),
                                     icon = { Icon(screen.icon, contentDescription = screen.title) },
                                     label = { Text(screen.title) },
+                                    // Material components automatically handle selected/unselected text and icon colors.
                                     selected = currentRoute == screen.route,
                                     onClick = {
                                         navController.navigate(screen.route) {
@@ -111,17 +113,19 @@ class MainActivity : ComponentActivity() {
             modifier = modifier
         ) {
             composable(BottomNavItem.SongList.route) {
+                // Pass the viewModels down to the screens
                 SongListScreen(viewModel = viewModel) { song ->
                     viewModel.playSong(song)
                     navController.navigate(AppDestinations.NOW_PLAYING_ROUTE)
                 }
             }
             composable(AppDestinations.SPEEDOMETER_ROUTE) {
-                SpeedometerScreen(vehicleStatusViewModel)
+                SpeedometerScreen(viewModel = vehicleStatusViewModel, mainViewModel = viewModel)
             }
 
             composable(AppDestinations.SETTINGS_ROUTE) {
-                SettingsScreen()
+                // In a real app, you would likely pass the viewModel here too.
+                SettingsScreen(viewModel = viewModel)
             }
 
             composable(AppDestinations.NOW_PLAYING_ROUTE) {

@@ -1,66 +1,63 @@
 package com.example.composemediaplayer.ui.screen.setting
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Switch
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.composemediaplayer.ui.MainViewModel
 
 @Composable
-fun SettingsScreen() {
-    val isDarkMode = remember { mutableStateOf(false) }
-    val useMph = remember { mutableStateOf(false) }
+fun SettingsScreen(
+    viewModel: MainViewModel = viewModel()
+) {
+    val isDarkMode by viewModel.isDarkModeEnabled.collectAsState()
+    val isMphEnabled by viewModel.isMphEnabled.collectAsState()
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = "Settings",
-            style = androidx.compose.material3.MaterialTheme.typography.headlineMedium,
-            modifier = Modifier.padding(bottom = 24.dp)
-        )
-
-        // Example: Dark Mode Toggle
-        SettingSwitchItem(
+        SettingSwitch(
             title = "Dark Mode",
-            checked = isDarkMode.value,
-            onCheckedChange = { isDarkMode.value = it }
+            isChecked = isDarkMode,
+            onCheckedChange = { newCheckedState ->
+                // Send the event to the ViewModel
+                viewModel.setDarkMode(newCheckedState)
+            }
         )
-
-        // Example: Unit of Measurement Toggle
-        SettingSwitchItem(
-            title = "Use Miles per hour (mph)",
-            checked = useMph.value,
-            onCheckedChange = { useMph.value = it }
+        Spacer(modifier = Modifier.height(16.dp))
+        SettingSwitch(
+            title = "Use Miles per hour (MPH)",
+            isChecked = isMphEnabled,
+            onCheckedChange = { newCheckedState ->
+                // Send the event to the ViewModel
+                viewModel.setUseMph(newCheckedState)
+            }
         )
     }
 }
 
 @Composable
-fun SettingSwitchItem(
+private fun SettingSwitch(
     title: String,
-    checked: Boolean,
+    isChecked: Boolean,
     onCheckedChange: (Boolean) -> Unit
 ) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(text = title, modifier = Modifier.weight(1f))
+        Text(text = title)
         Switch(
-            checked = checked,
+            checked = isChecked,
             onCheckedChange = onCheckedChange
         )
     }

@@ -19,17 +19,29 @@ import kotlin.math.cos
 import kotlin.math.min
 import kotlin.math.sin
 
+private const val KMH_MAX_SPEED = 280f
+private const val KMH_TICK_STEP = 20f
+private const val MPH_MAX_SPEED = 180f
+private const val MPH_TICK_STEP = 20f
+private const val KMH_TO_MPH_FACTOR = 0.621371f
+
 @Composable
 fun Speedometer(
     modifier: Modifier = Modifier,
     currentSpeed: Float,
-    minSpeed: Float = 0f,
-    maxSpeed: Float = 180f,
-    tickStep: Float = 20f,
+    useMph: Boolean,
 ) {
+    // Determine speedometer parameters based on the selected unit
+    val maxSpeed = if (useMph) MPH_MAX_SPEED else KMH_MAX_SPEED
+    val tickStep = if (useMph) MPH_TICK_STEP else KMH_TICK_STEP
+    val minSpeed = 0f
+
+    // Convert speed to the appropriate unit for display
+    val displaySpeed = if (useMph) currentSpeed * KMH_TO_MPH_FACTOR else currentSpeed
+
     // Animate the speed value for a smooth needle transition
     val animatedSpeed by animateFloatAsState(
-        targetValue = currentSpeed,
+        targetValue = displaySpeed,
         animationSpec = tween(durationMillis = 1000),
         label = "SpeedAnimation"
     )

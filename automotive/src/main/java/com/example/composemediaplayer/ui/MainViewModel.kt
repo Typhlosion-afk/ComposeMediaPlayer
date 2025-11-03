@@ -20,12 +20,16 @@ import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
+import com.example.composemediaplayer.ui.screen.setting.SettingsManager
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import javax.inject.Singleton
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val repository: PlaybackRepository,
     private val mediaPlayerManager: MusicPlayerManager,
+    private val settingsManager: SettingsManager,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
 
@@ -39,6 +43,28 @@ class MainViewModel @Inject constructor(
     val currentSong = mediaPlayerManager.currentSong
     val isPlaying = mediaPlayerManager.isPlaying
     val playbackPosition = mediaPlayerManager.playbackPosition
+
+    // --- Dark Mode State ---
+    private val _isDarkModeEnabled = MutableStateFlow(settingsManager.isDarkModeEnabled())
+    val isDarkModeEnabled: StateFlow<Boolean> = _isDarkModeEnabled.asStateFlow()
+
+    // --- MPH State ---
+    private val _isMphEnabled = MutableStateFlow(settingsManager.isMphEnabled())
+    val isMphEnabled: StateFlow<Boolean> = _isMphEnabled.asStateFlow()
+
+    fun setDarkMode(isEnabled: Boolean) {
+        viewModelScope.launch {
+            settingsManager.saveDarkModeState(isEnabled)
+            _isDarkModeEnabled.update { isEnabled }
+        }
+    }
+
+    fun setUseMph(isEnabled: Boolean) {
+        viewModelScope.launch {
+            settingsManager.saveUseMphState(isEnabled)
+            _isMphEnabled.update { isEnabled }
+        }
+    }
 
     private val connectionCallback = object : MediaBrowserCompat.ConnectionCallback() {
         override fun onConnected() {

@@ -63,7 +63,9 @@ android {
     sourceSets["main"].aidl.srcDirs("src/main/aidl")
 
     testOptions {
-
+        unitTests.all {
+            it.systemProperty("jacoco-agent.instrumentation-factory", "org.jacoco.agent.rt.internal_3570247.core.runtime.ModifiedSystemClassRuntime")
+        }
     }
 }
 
@@ -137,8 +139,6 @@ tasks.register<JacocoReport>("jacocoTestReport") {
         "**/Manifest*.*",
         "**/*Test*.*",
         "android/**/*.*",
-        "**/hilt_aggregated_deps*",
-        "**/dagger/hilt/internal/**"
     )
 
     val javaClasses = fileTree("${buildDir}/intermediates/javac/debug/classes") {

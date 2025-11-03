@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.sp
 fun EnergyMeter(
     modifier: Modifier = Modifier,
     currentLevel: Float,
+    isDarkMode: Boolean = false,
     minLevel: Float = 0f,
     maxLevel: Float = 100f,
     unitLabel: String = "%"
@@ -52,7 +53,7 @@ fun EnergyMeter(
 
     // Animate the text color for a smooth transition to red
     val textColor by animateColorAsState(
-        targetValue = if (clampedLevel < 20) criticalColor else Color.White,
+        targetValue = if (!isDarkMode) Color.Black else Color.White,
         animationSpec = tween(durationMillis = 300),
         label = "TextColorAnimation"
     )
