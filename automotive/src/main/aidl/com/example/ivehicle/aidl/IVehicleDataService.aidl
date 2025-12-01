@@ -1,6 +1,6 @@
-package com.example.composemediaplayer.ivehicle;
+package com.example.ivehicle.aidl;
 
-import com.example.composemediaplayer.ivehicle.IVehicleDataCallback;
+import com.example.ivehicle.aidl.IVehicleDataCallback;
 
 interface IVehicleDataService {
     float getCurrentSpeed();

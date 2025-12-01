@@ -1,4 +1,4 @@
-package com.example.composemediaplayer.ivehicle;
+package com.example.ivehicle.aidl;
 
 interface IVehicleDataCallback {
     void onSpeedChanged(float speed);

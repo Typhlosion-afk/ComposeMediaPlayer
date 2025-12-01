@@ -20,7 +20,7 @@ object DatabaseModule {
             context,
             AppDatabase::class.java,
             "media-player-db"
-        ).build()
+        ).fallbackToDestructiveMigration().build()
     }
 
     @Provides

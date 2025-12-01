@@ -8,7 +8,9 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 @Entity(tableName = "songs")
 data class Song(
-    @PrimaryKey val id: Long,
+    @PrimaryKey(autoGenerate = false)
+    val id: Long,
+
     val title: String,
     val artist: String,
     val album: String? = null,

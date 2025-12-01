@@ -1,5 +1,6 @@
 package com.example.composemediaplayer.data
 
+import android.util.Log
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -23,6 +24,6 @@ interface SongDao {
     fun getFavoriteSongs(): Flow<List<Song>>
 
     // Add this method to insert a list of songs
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertAll(songs: List<Song>)
 }

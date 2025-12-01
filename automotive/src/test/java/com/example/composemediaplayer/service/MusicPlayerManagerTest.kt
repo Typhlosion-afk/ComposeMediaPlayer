@@ -5,6 +5,7 @@ import android.media.MediaPlayer
 import android.os.Looper
 import com.example.composemediaplayer.data.Song
 import com.example.composemediaplayer.shadows.ShadowMediaPlayer
+import com.example.composemediaplayer.threadexample.MyCoroutineWorker
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.After
 import org.junit.Assert.*

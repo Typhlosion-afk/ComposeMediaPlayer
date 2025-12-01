@@ -112,6 +112,10 @@ dependencies {
     testImplementation("androidx.test:core:1.6.1")
     testImplementation("com.google.dagger:hilt-android-testing:2.48")
     kaptTest("com.google.dagger:hilt-compiler:2.48")
+
+    implementation("androidx.work:work-runtime-ktx:2.9.0")
+    implementation("androidx.work:work-rxjava2:2.9.0")
+    implementation("androidx.concurrent:concurrent-futures-ktx:1.1.0")
 }
 
 // ---------- Jacoco task ----------
