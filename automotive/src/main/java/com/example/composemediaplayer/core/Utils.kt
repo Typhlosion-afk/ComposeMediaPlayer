@@ -6,6 +6,8 @@ object AppDestinations {
     const val SPEEDOMETER_ROUTE = "speedometer"
     const val SETTINGS_ROUTE = "settings"
     const val NOW_PLAYING_ROUTE = "nowPlaying"
+    const val NAVIGATION_ROUTE = "navigation"
+    const val SONG_LIST_ROUTE = "song_list"
 }
 
 @SuppressLint("DefaultLocale")

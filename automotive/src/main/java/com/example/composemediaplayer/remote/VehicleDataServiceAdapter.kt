@@ -23,6 +23,9 @@ class VehicleDataServiceAdapter(
     private val _battery = MutableStateFlow(0f)
     override val batteryFlow: StateFlow<Float> = _battery
 
+    private val _isCharging = MutableStateFlow(false)
+    override val isChargingFlow: StateFlow<Boolean> = _isCharging
+
     private val callback = object : IVehicleDataCallback.Stub() {
         override fun onSpeedChanged(speed: Float) {
             _speed.value = speed
@@ -32,6 +35,11 @@ class VehicleDataServiceAdapter(
         override fun onBatteryLevelChanged(level: Float) {
             _battery.value = level
             Log.d("VehicleAdapter", "onBatteryLevelChanged: $level")
+        }
+
+        override fun onChargingStateChanged(charging: Boolean) {
+            _isCharging.value = charging
+            Log.d("VehicleAdapter", "onChargingStateChanged: $charging")
         }
     }
 

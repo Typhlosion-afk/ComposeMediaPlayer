@@ -7,9 +7,23 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.History
+import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationRail
@@ -17,8 +31,11 @@ import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
@@ -36,6 +53,7 @@ import com.example.composemediaplayer.core.AppDestinations
 import com.example.composemediaplayer.ui.childview.BottomNavItem
 import com.example.composemediaplayer.ui.screen.NowPlayingScreen
 import com.example.composemediaplayer.ui.screen.SongListScreen
+import com.example.composemediaplayer.ui.screen.navigation.NavigationScreen
 import com.example.composemediaplayer.ui.screen.setting.SettingsScreen
 import com.example.composemediaplayer.ui.screen.speed.SpeedometerScreen
 import com.example.composemediaplayer.ui.screen.speed.VehicleStatusViewModel
@@ -59,7 +77,8 @@ class MainActivity : ComponentActivity() {
                 val navItems = listOf(
                     BottomNavItem.SongList,
                     BottomNavItem.Speedometer,
-                    BottomNavItem.Setting,
+                    BottomNavItem.Navigation,
+                    BottomNavItem.Setting
                 )
 
                 Surface(color = MaterialTheme.colorScheme.background) {
@@ -109,10 +128,10 @@ class MainActivity : ComponentActivity() {
     ) {
         NavHost(
             navController = navController,
-            startDestination = BottomNavItem.SongList.route,
+            startDestination = AppDestinations.SONG_LIST_ROUTE,
             modifier = modifier
         ) {
-            composable(BottomNavItem.SongList.route) {
+            composable(AppDestinations.SONG_LIST_ROUTE) {
                 // Pass the viewModels down to the screens
                 SongListScreen(
                     viewModel = viewModel,
@@ -137,6 +156,10 @@ class MainActivity : ComponentActivity() {
                 ) {
                     navController.popBackStack()
                 }
+            }
+
+            composable(AppDestinations.NAVIGATION_ROUTE) {
+                NavigationScreen()
             }
         }
     }

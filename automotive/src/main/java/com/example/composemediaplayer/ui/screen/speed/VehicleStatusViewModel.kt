@@ -17,6 +17,7 @@ class VehicleStatusViewModel @Inject constructor(
 
     val speed = dataSource.speedFlow
     val energyLevel = dataSource.batteryFlow
+    val isCharging = dataSource.isChargingFlow
 
     init {
         dataSource.connect()
