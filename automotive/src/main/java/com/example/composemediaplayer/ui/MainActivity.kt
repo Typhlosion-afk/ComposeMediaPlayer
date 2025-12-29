@@ -7,6 +7,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -129,31 +133,55 @@ class MainActivity : ComponentActivity() {
         NavHost(
             navController = navController,
             startDestination = AppDestinations.SONG_LIST_ROUTE,
-            modifier = modifier
+            modifier = modifier,
+
+            enterTransition = {
+                slideInVertically(
+                    initialOffsetY = { it }
+                )
+            },
+
+            exitTransition = {
+                slideOutVertically(
+                    targetOffsetY = { -it }
+                )
+            },
+
+            popEnterTransition = {
+                slideInVertically(
+                    initialOffsetY = { -it }
+                )
+            },
+
+            popExitTransition = {
+                slideOutVertically(
+                    targetOffsetY = { it }
+                )
+            }
         ) {
             composable(AppDestinations.SONG_LIST_ROUTE) {
-                // Pass the viewModels down to the screens
                 SongListScreen(
                     viewModel = viewModel,
-                    onSongClick =
-                        { song ->
-                            viewModel.playSong(song)
-                            navController.navigate(AppDestinations.NOW_PLAYING_ROUTE)
-                        })
+                    onSongClick = { song ->
+                        viewModel.playSong(song)
+                        navController.navigate(AppDestinations.NOW_PLAYING_ROUTE)
+                    }
+                )
             }
+
             composable(AppDestinations.SPEEDOMETER_ROUTE) {
-                SpeedometerScreen(viewModel = vehicleStatusViewModel, mainViewModel = viewModel)
+                SpeedometerScreen(
+                    viewModel = vehicleStatusViewModel,
+                    mainViewModel = viewModel
+                )
             }
 
             composable(AppDestinations.SETTINGS_ROUTE) {
-                // In a real app, you would likely pass the viewModel here too.
                 SettingsScreen(viewModel = viewModel)
             }
 
             composable(AppDestinations.NOW_PLAYING_ROUTE) {
-                NowPlayingScreen(
-                    viewModel = viewModel
-                ) {
+                NowPlayingScreen(viewModel = viewModel) {
                     navController.popBackStack()
                 }
             }
@@ -163,6 +191,7 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
 
     private val requestPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
