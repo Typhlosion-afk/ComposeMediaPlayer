@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.StateFlow
 class VehicleDataServiceAdapter(
     private val context: Context
 ) : VehicleDataSource {
-
+    private var isBound = false
     private var vehicleService: IVehicleDataService? = null
 
     private val _speed = MutableStateFlow(0f)
@@ -43,17 +43,18 @@ class VehicleDataServiceAdapter(
         }
     }
 
-    private val connection = object : ServiceConnection {
+    private val connection: ServiceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, binder: IBinder?) {
             Log.d("VehicleAdapter", "Service connected: $name")
             vehicleService = IVehicleDataService.Stub.asInterface(binder)
             vehicleService?.registerCallback(callback)
-            Log.d("VehicleAdapter", "Callback registered")
+            isBound = true
         }
 
         override fun onServiceDisconnected(name: ComponentName?) {
-            Log.d("VehicleAdapter", "Service disconnected: $name")
+            Log.w("VehicleAdapter", "Service disconnected: $name")
             vehicleService = null
+            isBound = false
         }
     }
 

@@ -39,10 +39,12 @@ class MainViewModel @Inject constructor(
     @ApplicationContext private val context: Context
 ) : ViewModel() {
 
-    private val _currentListSong = MutableStateFlow<List<Song>>(emptyList())
     val currentListSong: StateFlow<List<Song>> = songDao.getAllSongs()
-        .stateIn(viewModelScope,
-            SharingStarted.WhileSubscribed(5000), emptyList())
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5000),
+            emptyList()
+        )
 
     fun toggleFavorite(song: Song) {
         viewModelScope.launch {
@@ -129,14 +131,12 @@ class MainViewModel @Inject constructor(
         mediaPlayerManager.startTracking()
     }
 
-
     fun loadData() {
-        viewModelScope.launch {
-            val songs = withContext(Dispatchers.IO) {
-                repository.getAllSongs()
+        viewModelScope.launch(Dispatchers.IO) {
+            val songs = repository.getAllSongs()
+            if (songs.isNotEmpty()) {
+                songDao.insertAll(songs)
             }
-            _currentListSong.value = songs
-            songDao.insertAll(_currentListSong.value)
         }
     }
 
