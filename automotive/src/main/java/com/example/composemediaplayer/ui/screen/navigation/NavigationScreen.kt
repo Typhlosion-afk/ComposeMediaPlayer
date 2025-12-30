@@ -56,11 +56,9 @@ fun NavigationScreen() {
     }
 }
 
-//
 // ----------------------------
 // CUSTOM SURFACE VIEW
 // ----------------------------
-//
 @SuppressLint("ViewConstructor")
 class MapTextureView(
     context: Context,

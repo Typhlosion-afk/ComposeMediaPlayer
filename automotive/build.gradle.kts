@@ -116,6 +116,8 @@ dependencies {
     implementation("androidx.work:work-runtime-ktx:2.9.0")
     implementation("androidx.work:work-rxjava2:2.9.0")
     implementation("androidx.concurrent:concurrent-futures-ktx:1.1.0")
+
+    debugImplementation("com.squareup.leakcanary:leakcanary-android:2.14")
 }
 
 // ---------- Jacoco task ----------
